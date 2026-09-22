@@ -1,128 +1,143 @@
-const metrics = [
-  { label: 'Available balance', value: 'R$ 128.420,18', delta: '+4.8%' },
-  { label: 'Pending entries', value: 'R$ 31.680,50', delta: '+1.2%' },
-  { label: 'Transactions', value: '1.246', delta: '+18.5%' },
-  { label: 'Risk score', value: 'Low', delta: 'Stable' }
-];
+'use client';
 
-const actions = ['Send Pix', 'Cash in', 'Generate QR', 'Statements', 'Merchant', 'Security'];
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function HomePage() {
+const LOGIN_EMAIL = 'admin@nexora.pay';
+const LOGIN_PASSWORD = 'Nexora@2026!Admin';
+
+export default function Page() {
+  const router = useRouter();
+  const [email, setEmail] = useState(LOGIN_EMAIL);
+  const [password, setPassword] = useState(LOGIN_PASSWORD);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 700));
+
+    if (email.trim().toLowerCase() === LOGIN_EMAIL && password === LOGIN_PASSWORD) {
+      localStorage.setItem('nexora-auth', JSON.stringify({ email, role: 'SUPER_ADMIN', loggedInAt: new Date().toISOString() }));
+      router.push('/dashboard');
+      return;
+    }
+
+    alert('Credenciais inválidas. Use admin@nexora.pay / Nexora@2026!Admin');
+    setIsSubmitting(false);
+  };
+
   return (
-    <main className="min-h-screen bg-shell-950 text-slate-100">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <header className="mb-8 flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/80 px-5 py-4 shadow-soft backdrop-blur-sm">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-brand-300">NEXORA PAY</p>
-            <h1 className="mt-1 text-xl font-semibold">Wallet Operations</h1>
+    <main className="min-h-screen bg-[#0e1217] text-slate-50">
+      <div className="mx-auto flex min-h-screen max-w-[480px] flex-col px-4 pb-8 pt-3">
+        <header className="mb-4 flex items-center justify-between px-1.5 py-2">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1d252f] text-lg text-[#dfe8ef] shadow-inner shadow-slate-700/40">
+              🏠
+            </span>
+            <div className="font-medium tracking-tight text-slate-200">nexora-pay.vercel.app</div>
           </div>
-          <button className="rounded-full border border-brand-500/40 bg-brand-500/10 px-4 py-2 text-sm font-medium text-brand-200 hover:bg-brand-500/20">
-            Security mode ON
-          </button>
+          <div className="flex items-center gap-2 text-slate-300">
+            <span className="text-sm">＋</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1d252f] text-lg">◔</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1d252f] text-lg">⋮</span>
+          </div>
         </header>
 
-        <section className="mb-8 grid gap-6 lg:grid-cols-[1.5fr_0.9fr]">
-          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-8 shadow-soft">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-400">Financial control</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl">NEXORA PAY</h2>
-            <p className="mt-4 max-w-xl text-slate-300">
-              Professional fintech infrastructure with merchant operations, wallet controls, risk oversight,
-              auditability, and production-ready architecture.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {actions.map((action) => (
-                <button
-                  key={action}
-                  className="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 hover:border-brand-500/60 hover:text-brand-200"
-                >
-                  {action}
-                </button>
-              ))}
+        <section className="mb-4 mt-1 flex items-center justify-between rounded-2xl border border-slate-700/80 bg-[#181d24] px-3 py-3 shadow-[0_10px_34px_rgba(0,0,0,0.18)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f2f4f6] text-xl text-[#121a22]">⚡</div>
+            <div>
+              <div className="text-[0.7rem] uppercase tracking-[0.22em] text-slate-400">NEXORA PAY</div>
+              <div className="text-xl font-semibold tracking-tight text-slate-100">Nexora Pay</div>
+            </div>
+          </div>
+          <button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-[#1b222b] text-xl text-slate-200">
+            ☰
+          </button>
+        </section>
+
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-[22px] border border-slate-700/80 bg-[#141a20] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.28)]">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">E-mail profissional <span className="text-red-400">*</span></label>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder="nome@empresa.com"
+              className="w-full rounded-xl border border-[#2d7ef7] bg-[#11171d] px-4 py-3 text-base text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#4a93ff]"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">Nome da empresa <span className="text-red-400">*</span></label>
+            <input
+              defaultValue="Sua empresa"
+              type="text"
+              className="w-full rounded-xl border border-slate-700 bg-[#11171d] px-4 py-3 text-base text-slate-300 outline-none placeholder:text-slate-500"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">Site</label>
+            <input
+              defaultValue="https://empresa.com"
+              type="text"
+              className="w-full rounded-xl border border-slate-700 bg-[#11171d] px-4 py-3 text-base text-slate-300 outline-none placeholder:text-slate-500"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">Tipo de negócio <span className="text-red-400">*</span></label>
+            <div className="relative">
+              <select defaultValue="" className="w-full appearance-none rounded-xl border border-slate-700 bg-[#11171d] px-4 py-3 pr-10 text-base text-slate-300 outline-none">
+                <option value="" disabled>Selecione...</option>
+                <option value="retail">Retail</option>
+                <option value="saas">SaaS</option>
+                <option value="fintech">Fintech</option>
+                <option value="servicos">Serviços</option>
+              </select>
+              <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">⌄</span>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-soft">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-slate-400">Operational status</p>
-              <span className="rounded-full border border-brand-500/20 bg-brand-500/10 px-2 py-1 text-xs font-medium text-brand-200">
-                Healthy
-              </span>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500">API</p>
-                <p className="mt-2 text-lg font-medium text-white">Online</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500">Database</p>
-                <p className="mt-2 text-lg font-medium text-white">PostgreSQL connected</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500">Queue</p>
-                <p className="mt-2 text-lg font-medium text-white">Redis active</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {metrics.map((metric) => (
-            <article key={metric.label} className="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-soft">
-              <p className="text-sm text-slate-400">{metric.label}</p>
-              <div className="mt-5 flex items-end justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-white">{metric.value}</h3>
-                <span className="text-xs font-medium text-brand-300">{metric.delta}</span>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-soft">
-            <div className="mb-5 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">Recent activity</h3>
-              <button className="text-sm text-brand-300">View all</button>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                ['Incoming Pix', 'R$ 4.800,00', '14:32', 'Confirmed'],
-                ['Merchant payout', 'R$ 12.450,00', '11:11', 'Processing'],
-                ['Security alert', 'Session changed', '09:54', 'Reviewed'],
-                ['Ledger correction', 'R$ 320,00', '08:17', 'Audit log']
-              ].map(([name, value, time, status]) => (
-                <div key={name} className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                  <div>
-                    <p className="font-medium text-white">{name}</p>
-                    <p className="text-sm text-slate-400">{time}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-white">{value}</p>
-                    <p className="text-xs text-brand-200">{status}</p>
-                  </div>
-                </div>
-              ))}
+          <div className="rounded-xl border border-slate-700 bg-[#101820] p-3 text-sm text-slate-300">
+            <div className="mb-1 text-slate-200">O que você está tentando melhorar?</div>
+            <div className="leading-6 text-slate-400">
+              Taxas mais baixas, liquidação mais rápida, menos erros, recuperação de pagamentos...
             </div>
           </div>
 
-          <aside className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-soft">
-            <h3 className="text-lg font-semibold text-white">Security center</h3>
-            <div className="mt-6 space-y-5">
-              {[
-                ['MFA policy', 'Enabled'],
-                ['Device trust', '7 devices'],
-                ['Risk engine', 'Monitoring'],
-                ['Audit log', '92 events']
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 p-3">
-                  <span className="text-sm text-slate-300">{label}</span>
-                  <span className="text-sm font-medium text-white">{value}</span>
-                </div>
-              ))}
-            </div>
-          </aside>
-        </section>
+          <div className="pt-2">
+            <label className="mb-2 block text-sm font-medium text-slate-200">Senha de acesso</label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              className="w-full rounded-xl border border-slate-700 bg-[#11171d] px-4 py-3 text-base text-slate-50 outline-none placeholder:text-slate-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 flex w-full items-center justify-center rounded-xl bg-[#f1f3f5] px-4 py-3 font-semibold text-[#12161b] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isSubmitting ? 'Entrando...' : 'Acessar painel'}
+          </button>
+        </form>
+
+        <div className="mt-5 rounded-2xl border border-slate-700 bg-[#121922] p-3 text-sm text-slate-400">
+          <div className="flex items-center justify-between">
+            <span>Login administrativo padrão</span>
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-emerald-300">
+              demo
+            </span>
+          </div>
+          <div className="mt-2 text-slate-200">admin@nexora.pay</div>
+          <div className="text-slate-400">Nexora@2026!Admin</div>
+        </div>
       </div>
     </main>
   );
